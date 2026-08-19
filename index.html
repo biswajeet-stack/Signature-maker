@@ -28,7 +28,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             flex: 1;
-            min-width: 300px;
+            min-width: 350px;
         }
         h2 {
             margin-top: 0;
@@ -43,13 +43,14 @@
             font-weight: 600;
             font-size: 14px;
         }
-        input {
+        input[type="text"], input[type="email"], select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             box-sizing: border-box;
             font-family: inherit;
+            font-size: 14px;
         }
         button {
             background-color: #00e5ff;
@@ -73,16 +74,30 @@
             margin-top: 20px;
             background: #fff;
             overflow-x: auto;
+            display: flex;
+            justify-content: center;
+            min-height: 150px;
         }
     </style>
 </head>
-<body>
+<body onload="updateSignature()">
 
     <div class="container">
         <!-- Input Form -->
         <div class="form-section">
             <h2>Enter Your Details</h2>
             
+            <div class="form-group">
+                <label>Design Style (Brand Colors)</label>
+                <select id="inpStyle" onchange="updateSignature()">
+                    <option value="classic">Classic Dark</option>
+                    <option value="minimal">Minimal Dark</option>
+                    <option value="stacked">Centered Stack Dark</option>
+                </select>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
             <div class="form-group">
                 <label>Full Name</label>
                 <input type="text" id="inpName" value="John Doe" oninput="updateSignature()">
@@ -129,73 +144,132 @@
             <p style="font-size: 14px; color: #666;">This is exactly how it will look in your email.</p>
             
             <div class="preview-box">
-                <!-- Signature Container -->
-                <div id="signature-container">
-                    <!-- Increased max-width here to 800px to prevent text wrapping -->
-                    <table cellpadding="0" cellspacing="0" border="0" style="background-color: #12102e; color: #ffffff; font-family: Arial, sans-serif; padding: 25px; width: 100%; max-width: 800px;">
-                        <tr>
-                            <!-- Left Column: Logo -->
-                            <td width="220" valign="middle" style="padding-right: 25px;">
-                                <img id="sigLogo" src="https://static.wixstatic.com/media/20373b_d8b8bf404999470396ac52a7171ef0aa~mv2.png/v1/fill/w_296,h_41,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/full_logo.png" alt="Logo" style="display: block; max-width: 200px; height: auto;">
-                            </td>
-                            
-                            <!-- Right Column: Text Details -->
-                            <td valign="middle">
-                                <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
-                                    <tr>
-                                        <td id="sigName" style="font-size: 20px; font-weight: bold; padding-bottom: 4px; color: #ffffff;">John Doe</td>
-                                    </tr>
-                                    <tr>
-                                        <td id="sigTitle" style="font-size: 15px; padding-bottom: 18px; color: #ffffff;">Sales & Marketing Director</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="font-size: 13px; line-height: 1.6; white-space: nowrap;">
-                                            <span style="color: #00e5ff; font-weight: bold;">Phone:</span> <span id="sigPhone" style="color: #ffffff;">(800) 555-0199</span> 
-                                            <span style="color: #00e5ff; font-weight: bold; margin-left: 8px;">Mobile:</span> <span id="sigMobile" style="color: #ffffff;">(800) 555-0299</span><br>
-                                            <span style="color: #00e5ff; font-weight: bold;">Email:</span> <a id="sigEmail" href="mailto:john.doe@my-company.com" style="color: #ffffff; text-decoration: none;">john.doe@my-company.com</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-top: 18px;"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="font-size: 13px; line-height: 1.5; color: #ffffff;">
-                                            <span id="sigCompany">My Company</span><br>
-                                            <span id="sigAddress">Street, City, Zip Code, Country</span><br>
-                                            <a id="sigWebsite" href="http://www.my-company.com" style="color: #00e5ff; text-decoration: none;">www.my-company.com</a>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                <!-- Signature gets injected here dynamically -->
+                <div id="signature-container"></div>
             </div>
         </div>
     </div>
 
     <script>
         function updateSignature() {
-            document.getElementById('sigName').innerText = document.getElementById('inpName').value || ' ';
-            document.getElementById('sigTitle').innerText = document.getElementById('inpTitle').value || ' ';
-            document.getElementById('sigPhone').innerText = document.getElementById('inpPhone').value || ' ';
-            document.getElementById('sigMobile').innerText = document.getElementById('inpMobile').value || ' ';
+            // Get all user inputs
+            const style = document.getElementById('inpStyle').value;
+            const name = document.getElementById('inpName').value || ' ';
+            const title = document.getElementById('inpTitle').value || ' ';
+            const phone = document.getElementById('inpPhone').value || ' ';
+            const mobile = document.getElementById('inpMobile').value || ' ';
+            const email = document.getElementById('inpEmail').value || ' ';
+            const company = document.getElementById('inpCompany').value || ' ';
+            const address = document.getElementById('inpAddress').value || ' ';
+            let website = document.getElementById('inpWebsite').value || ' ';
+            const websiteUrl = website.startsWith('http') ? website : "http://" + website;
             
-            let email = document.getElementById('inpEmail').value;
-            let emailElem = document.getElementById('sigEmail');
-            emailElem.innerText = email || ' ';
-            emailElem.href = "mailto:" + email;
+            const defaultLogo = 'https://static.wixstatic.com/media/20373b_d8b8bf404999470396ac52a7171ef0aa~mv2.png/v1/fill/w_296,h_41,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/full_logo.png';
+            const logo = document.getElementById('inpLogo').value || defaultLogo;
 
-            document.getElementById('sigCompany').innerText = document.getElementById('inpCompany').value || ' ';
-            document.getElementById('sigAddress').innerText = document.getElementById('inpAddress').value || ' ';
+            let htmlTemplate = '';
+
+            // --- TEMPLATE 1: Classic Dark ---
+            if (style === 'classic') {
+                htmlTemplate = `
+                <table cellpadding="0" cellspacing="0" border="0" style="background-color: hsl(244, 48%, 22%); color: #ffffff; font-family: Arial, sans-serif; padding: 12px; width: 100%; max-width: 480px;">
+                    <tr>
+                        <td width="130" valign="middle" style="padding-right: 12px;">
+                            <img src="${logo}" alt="Logo" style="display: block; max-width: 120px; height: auto;">
+                        </td>
+                        <td valign="middle">
+                            <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+                                <tr>
+                                    <td style="font-size: 15px; font-weight: bold; padding-bottom: 2px; color: #ffffff;">${name}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 11px; padding-bottom: 8px; color: #ffffff;">${title}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 10px; line-height: 1.4; white-space: nowrap;">
+                                        <span style="color: #00e5ff; font-weight: bold;">Phone:</span> <span style="color: #ffffff;">${phone}</span> 
+                                        <span style="color: #00e5ff; font-weight: bold; margin-left: 6px;">Mobile:</span> <span style="color: #ffffff;">${mobile}</span><br>
+                                        <span style="color: #00e5ff; font-weight: bold;">Email:</span> <a href="mailto:${email}" style="color: #ffffff; text-decoration: none;">${email}</a>
+                                    </td>
+                                </tr>
+                                <tr><td style="padding-top: 8px;"></td></tr>
+                                <tr>
+                                    <td style="font-size: 10px; line-height: 1.3;">
+                                        <span style="color: #ffffff;">${company}</span><br>
+                                        <span style="color: #ffffff;">${address}</span><br>
+                                        <a href="${websiteUrl}" style="color: #00e5ff; text-decoration: none;">${website}</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>`;
+            } 
+
+            // --- TEMPLATE 2: Minimal Dark ---
+            else if (style === 'minimal') {
+                htmlTemplate = `
+                <table cellpadding="0" cellspacing="0" border="0" style="background-color: hsl(244, 48%, 22%); color: #ffffff; font-family: Arial, sans-serif; padding: 15px; width: 100%; max-width: 480px;">
+                    <tr>
+                        <td width="130" valign="middle" style="padding-right: 15px; border-right: 2px solid #00e5ff;">
+                            <img src="${logo}" alt="Logo" style="display: block; max-width: 120px; height: auto;">
+                        </td>
+                        <td valign="middle" style="padding-left: 15px;">
+                            <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+                                <tr>
+                                    <td style="font-size: 15px; font-weight: bold; padding-bottom: 2px; color: #ffffff;">${name}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 11px; padding-bottom: 8px; color: #cccccc; text-transform: uppercase; letter-spacing: 0.5px;">${title}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 10px; line-height: 1.5; white-space: nowrap;">
+                                        <span style="color: #00e5ff; font-weight: bold;">P:</span> <span style="color: #ffffff;">${phone}</span> | 
+                                        <span style="color: #00e5ff; font-weight: bold;">M:</span> <span style="color: #ffffff;">${mobile}</span><br>
+                                        <span style="color: #00e5ff; font-weight: bold;">E:</span> <a href="mailto:${email}" style="color: #ffffff; text-decoration: none;">${email}</a>
+                                    </td>
+                                </tr>
+                                <tr><td style="padding-top: 6px;"></td></tr>
+                                <tr>
+                                    <td style="font-size: 10px; line-height: 1.4; color: #cccccc;">
+                                        <strong style="color: #ffffff;">${company}</strong><br>
+                                        ${address}<br>
+                                        <a href="${websiteUrl}" style="color: #00e5ff; text-decoration: none; font-weight: bold;">${website}</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>`;
+            }
             
-            let website = document.getElementById('inpWebsite').value;
-            let websiteElem = document.getElementById('sigWebsite');
-            websiteElem.innerText = website || ' ';
-            websiteElem.href = website.startsWith('http') ? website : "http://" + website;
+            // --- TEMPLATE 3: Centered Stack Dark ---
+            else if (style === 'stacked') {
+                htmlTemplate = `
+                <table cellpadding="0" cellspacing="0" border="0" style="background-color: hsl(244, 48%, 22%); border-top: 3px solid #00e5ff; color: #ffffff; font-family: Arial, sans-serif; padding: 20px; width: 100%; max-width: 400px; text-align: center;">
+                    <tr>
+                        <td align="center" style="padding-bottom: 15px;">
+                            <img src="${logo}" alt="Logo" style="display: inline-block; max-width: 140px; height: auto;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="font-size: 16px; font-weight: bold; padding-bottom: 2px; color: #ffffff;">${name}</td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="font-size: 11px; padding-bottom: 12px; color: #cccccc;">${title}</td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="font-size: 10px; line-height: 1.6; color: #ffffff;">
+                            ${phone} &nbsp;|&nbsp; ${mobile}<br>
+                            <a href="mailto:${email}" style="color: #00e5ff; text-decoration: none;">${email}</a><br>
+                            <a href="${websiteUrl}" style="color: #00e5ff; text-decoration: none;">${website}</a>
+                        </td>
+                    </tr>
+                </table>`;
+            }
 
-            let logoUrl = document.getElementById('inpLogo').value;
-            document.getElementById('sigLogo').src = logoUrl || 'https://static.wixstatic.com/media/20373b_d8b8bf404999470396ac52a7171ef0aa~mv2.png/v1/fill/w_296,h_41,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/full_logo.png';
+            // Inject the selected template into the DOM
+            document.getElementById('signature-container').innerHTML = htmlTemplate;
         }
 
         function copySignature() {
