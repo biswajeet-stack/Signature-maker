@@ -111,10 +111,6 @@
                 <input type="text" id="inpPhone" value="(800) 555-0199" oninput="updateSignature()">
             </div>
             <div class="form-group">
-                <label>Mobile Number</label>
-                <input type="text" id="inpMobile" value="(800) 555-0299" oninput="updateSignature()">
-            </div>
-            <div class="form-group">
                 <label>Email Address</label>
                 <input type="email" id="inpEmail" value="john.doe@my-company.com" oninput="updateSignature()">
             </div>
@@ -157,7 +153,6 @@
             const name = document.getElementById('inpName').value || ' ';
             const title = document.getElementById('inpTitle').value || ' ';
             const phone = document.getElementById('inpPhone').value || ' ';
-            const mobile = document.getElementById('inpMobile').value || ' ';
             const email = document.getElementById('inpEmail').value || ' ';
             const company = document.getElementById('inpCompany').value || ' ';
             const address = document.getElementById('inpAddress').value || ' ';
@@ -187,8 +182,7 @@
                                 </tr>
                                 <tr>
                                     <td style="font-size: 10px; line-height: 1.4; white-space: nowrap;">
-                                        <span style="color: #00e5ff; font-weight: bold;">Phone:</span> <span style="color: #ffffff;">${phone}</span> 
-                                        <span style="color: #00e5ff; font-weight: bold; margin-left: 6px;">Mobile:</span> <span style="color: #ffffff;">${mobile}</span><br>
+                                        <span style="color: #00e5ff; font-weight: bold;">Phone:</span> <span style="color: #ffffff;">${phone}</span><br>
                                         <span style="color: #00e5ff; font-weight: bold;">Email:</span> <a href="mailto:${email}" style="color: #ffffff; text-decoration: none;">${email}</a>
                                     </td>
                                 </tr>
@@ -224,8 +218,7 @@
                                 </tr>
                                 <tr>
                                     <td style="font-size: 10px; line-height: 1.5; white-space: nowrap;">
-                                        <span style="color: #00e5ff; font-weight: bold;">P:</span> <span style="color: #ffffff;">${phone}</span> | 
-                                        <span style="color: #00e5ff; font-weight: bold;">M:</span> <span style="color: #ffffff;">${mobile}</span><br>
+                                        <span style="color: #00e5ff; font-weight: bold;">P:</span> <span style="color: #ffffff;">${phone}</span><br>
                                         <span style="color: #00e5ff; font-weight: bold;">E:</span> <a href="mailto:${email}" style="color: #ffffff; text-decoration: none;">${email}</a>
                                     </td>
                                 </tr>
@@ -260,7 +253,7 @@
                     </tr>
                     <tr>
                         <td align="center" style="font-size: 10px; line-height: 1.6; color: #ffffff;">
-                            ${phone} &nbsp;|&nbsp; ${mobile}<br>
+                            ${phone}<br>
                             <a href="mailto:${email}" style="color: #00e5ff; text-decoration: none;">${email}</a><br>
                             <a href="${websiteUrl}" style="color: #00e5ff; text-decoration: none;">${website}</a>
                         </td>
